@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IRS Debt Growth Calculator</title>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+        color: #1e293b;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .container {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 800px;
+        width: 100%;
+      }
+      h1 {
+        text-align: center;
+        color: #0f172a;
+      }
+      .input-group {
+        margin-top: 20px;
+      }
+      label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 8px;
+      }
+      input[type="number"],
+      input[type="range"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 16px;
+      }
+      .results {
+        margin-top: 30px;
+        text-align: center;
+        background: linear-gradient(to bottom, #ffe4e6, #fecdd3);
+        border-radius: 16px;
+        padding: 30px;
+        border: 1px solid #fecaca;
+      }
+      .results h2 {
+        font-size: 48px;
+        color: #dc2626;
+        margin: 10px 0;
+      }
+      .results p {
+        margin: 0;
+        color: #475569;
+      }
+      button {
+        display: block;
+        margin: 30px auto 0;
+        padding: 15px 25px;
+        font-size: 18px;
+        background-color: #4f46e5;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      button:hover {
+        background-color: #4338ca;
+      }
+      .small {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>See How Fast IRS Debt Grows Each Year You Wait</h1>
+
+      <div class="input-group">
+        <label for="amount">Amount Owed ($)</label>
+        <input type="number" id="amount" value="10000" min="0" />
+      </div>
+
+      <div class="input-group">
+        <label for="time">Time Waiting (Months)</label>
+        <input type="range" id="time" min="0" max="60" value="12" />
+        <p id="timeLabel">12 months</p>
+      </div>
+
+      <div class="results">
+        <p>Your $<span id="base">10,000</span> debt becomes:</p>
+        <h2 id="total">$12,500</h2>
+        <p>After <span id="years">1 year</span></p>
+      </div>
+
+      <button onclick="window.open('https://www.taxrise.com', '_blank')">
+        Check Your Relief Estimate in 60 Seconds
+      </button>
+
+      <p class="small">
+        *Based on 8% annual interest (compounded daily) and a 0.5% monthly penalty capped at 25%.
+        This calculator is for illustration only.
+      </p>
+    </div>
+
+    <script>
+      const amountInput = document.getElementById('amount');
+      const timeInput = document.getElementById('time');
+      const totalDisplay = document.getElementById('total');
+      const baseDisplay = document.getElementById('base');
+      const yearsDisplay = document.getElementById('years');
+      const timeLabel = document.getElementById('timeLabel');
+
+      function calculate() {
+        const amount = parseFloat(amountInput.value) || 0;
+        const months = parseInt(timeInput.value);
+
+        const interestRate = 0.08; // 8% APR
+        const penaltyPerMonth = 0.005; // 0.5% per month
+        const penaltyCap = 0.25; // 25% cap
+
+        const days = months * 30.4375;
+        const interestFactor = Math.pow(1 + interestRate / 365, days);
+        const interest = amount * (interestFactor - 1);
+        const penalty = amount * Math.min(penaltyPerMonth * months, penaltyCap);
+        const total = amount + interest + penalty;
+
+        totalDisplay.textContent = `$${total.toLocaleString(undefined, {
+          maximumFractionDigits: 0
+        })}`;
+        baseDisplay.textContent = amount.toLocaleString();
+        const years = months / 12;
+        yearsDisplay.textContent =
+          years >= 1 ? `${years.toFixed(1)} year${years > 1 ? 's' : ''}` : `${months} months`;
+        timeLabel.textContent = `${months} month${months === 1 ? '' : 's'}`;
+      }
+
+      amountInput.addEventListener('input', calculate);
+      timeInput.addEventListener('input', calculate);
+
+      calculate();
+    </script>
+  </body>
+</html>
