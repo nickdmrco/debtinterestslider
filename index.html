@@ -1,156 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>IRS Debt Growth Calculator</title>
     <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
-        color: #1e293b;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
+      :root{
+        --slate-900:#0f172a;--slate-800:#1e293b;--slate-700:#334155;--slate-600:#475569;--slate-500:#64748b;--slate-300:#cbd5e1;--slate-200:#e2e8f0;--slate-100:#f1f5f9;--indigo-600:#4f46e5;--indigo-700:#4338ca;--rose-600:#dc2626;--rose-200:#fecaca;--rose-100:#ffe4e6;--rose-50:#fff1f2;
       }
-      .container {
-        background: #fff;
-        border-radius: 24px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        padding: 40px;
-        max-width: 800px;
-        width: 100%;
-      }
-      h1 {
-        text-align: center;
-        color: #0f172a;
-      }
-      .input-group {
-        margin-top: 20px;
-      }
-      label {
-        font-weight: 600;
-        display: block;
-        margin-bottom: 8px;
-      }
-      input[type="number"],
-      input[type="range"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #cbd5e1;
-        border-radius: 10px;
-        font-size: 16px;
-      }
-      .results {
-        margin-top: 30px;
-        text-align: center;
-        background: linear-gradient(to bottom, #ffe4e6, #fecdd3);
-        border-radius: 16px;
-        padding: 30px;
-        border: 1px solid #fecaca;
-      }
-      .results h2 {
-        font-size: 48px;
-        color: #dc2626;
-        margin: 10px 0;
-      }
-      .results p {
-        margin: 0;
-        color: #475569;
-      }
-      button {
-        display: block;
-        margin: 30px auto 0;
-        padding: 15px 25px;
-        font-size: 18px;
-        background-color: #4f46e5;
-        color: #fff;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-      }
-      button:hover {
-        background-color: #4338ca;
-      }
-      .small {
-        text-align: center;
-        color: #94a3b8;
-        font-size: 12px;
-        margin-top: 10px;
+      *{box-sizing:border-box}
+      body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f8fafc;color:var(--slate-800)}
+      .wrap{max-width:1100px;margin:40px auto;padding:24px}
+      .hero{font-weight:800;text-align:center;color:var(--slate-900);font-size:clamp(28px,5vw,44px);line-height:1.1;letter-spacing:.2px}
+      .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-top:24px}
+
+      /* Left card */
+      .card{background:#fff;border:1px solid var(--slate-200);border-radius:24px;box-shadow:0 6px 20px rgba(15,23,42,.06);padding:28px}
+      .result{background:linear-gradient(180deg,#ffe4e6 0%, #fecdd3 55%, #fca5a5 100%);border:1px solid var(--rose-200);border-radius:20px;padding:28px;margin-top:16px}
+      .result h2{margin:6px 0 0 0;font-size:56px;color:#d22c2c;letter-spacing:.5px}
+      .pill{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+      .pill>div{background:var(--slate-100);border:1px solid var(--slate-200);border-radius:14px;padding:12px}
+      .pill .label{font-size:11px;text-transform:uppercase;color:var(--slate-500);letter-spacing:.06em}
+      .pill .val{font-weight:700}
+
+      /* Right controls */
+      .ctl{background:#fff;border:1px solid var(--slate-200);border-radius:24px;box-shadow:0 6px 20px rgba(15,23,42,.06);padding:28px}
+      .ctl h3{margin:0 0 6px 0;color:var(--slate-900)}
+      .field{margin-top:18px}
+      label{display:block;font-size:14px;color:var(--slate-700);font-weight:600;margin-bottom:6px}
+      .input{display:flex;align-items:center;border:1px solid var(--slate-300);border-radius:12px;overflow:hidden;background:#fff}
+      .input span{padding:10px 14px;background:#f8fafc;color:var(--slate-500)}
+      .input input[type=number]{flex:1;padding:10px 12px;border:0;outline:0;font-size:16px}
+      .sliderRow{display:flex;align-items:center;gap:12px}
+      input[type=range]{width:100%}
+      .ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--slate-500);margin-top:6px}
+
+      /* CTA matches screenshot style (outline button) */
+      .cta{display:block;width:100%;text-align:center;margin:24px auto 0;padding:18px;border-radius:16px;border:2px solid var(--slate-800);color:var(--slate-800);background:#fff;font-weight:700;font-size:16px;text-decoration:none}
+      .cta:hover{background:#f1f5f9}
+
+      .fine{margin-top:8px;font-size:12px;color:var(--slate-500)}
+
+      @media (max-width:900px){
+        .grid{grid-template-columns:1fr;}
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <h1>See How Fast IRS Debt Grows Each Year You Wait</h1>
+    <div class="wrap">
+      <h1 class="hero">See How Fast IRS Debt<br/>Grows Each Year You Wait</h1>
 
-      <div class="input-group">
-        <label for="amount">Amount Owed ($)</label>
-        <input type="number" id="amount" value="25000" min="0" />
+      <div class="grid">
+        <!-- Left: Result card -->
+        <section class="card">
+          <div>
+            <h3>IRS Penalties Add Up Fast</h3>
+            <div class="result">
+              <p>Your <strong id="baseLabel">$10,000</strong> debt becomes:</p>
+              <h2 id="totalLabel">$12,500</h2>
+              <p class="after">After <strong id="timePretty">1 year</strong></p>
+            </div>
+            <div class="pill">
+              <div><div class="label">Interest</div><div class="val" id="interestLabel">$0</div></div>
+              <div><div class="label">Penalties</div><div class="val" id="penaltyLabel">$0</div></div>
+              <div><div class="label">Total</div><div class="val" id="totalSmall">$0</div></div>
+            </div>
+          </div>
+
+          <a class="cta" href="https://www.taxrise.com" target="_blank" rel="noopener noreferrer">Check Your Relief Estimate in 60 Seconds</a>
+          <div class="fine">Based on 8% annual interest (compounded daily) and a 0.5% monthly late-payment penalty capped at 25%. For illustration only.</div>
+        </section>
+
+        <!-- Right: Controls -->
+        <aside class="ctl">
+          <div class="field">
+            <label for="amt">Amount</label>
+            <div class="input"><span>$</span><input id="amt" type="number" min="0" step="100" value="10000" /></div>
+          </div>
+
+          <div class="field">
+            <label for="months">Time Waiting</label>
+            <div class="sliderRow">
+              <input id="months" type="range" min="6" max="60" step="6" value="12" />
+              <div id="monthsPretty" style="min-width:120px;font-weight:700;color:var(--slate-900);text-align:right">1 year</div>
+            </div>
+            <div class="ticks"><span>6 mo</span><span>1 yr</span><span>1.5 yr</span><span>2 yr</span><span>2.5 yr</span><span>3 yr</span><span>3.5 yr</span><span>4 yr</span><span>4.5 yr</span><span>5 yr</span></div>
+          </div>
+
+          <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="input" style="flex-direction:column;align-items:flex-start;padding:12px">
+              <div style="font-size:12px;color:var(--slate-500);text-transform:uppercase;letter-spacing:.06em">Interest Rate</div>
+              <div style="font-weight:700;margin-top:4px">8% APR</div>
+              <div style="font-size:12px;color:var(--slate-500)">Compounded daily</div>
+            </div>
+            <div class="input" style="flex-direction:column;align-items:flex-start;padding:12px">
+              <div style="font-size:12px;color:var(--slate-500);text-transform:uppercase;letter-spacing:.06em">Late-Payment Penalty</div>
+              <div style="font-weight:700;margin-top:4px">0.5% / month</div>
+              <div style="font-size:12px;color:var(--slate-500)">Capped at 25%</div>
+            </div>
+          </div>
+        </aside>
       </div>
-
-      <div class="input-group">
-        <label for="time">Time Waiting (Months)</label>
-        <input type="range" id="time" min="0" max="60" value="48" />
-        <p id="timeLabel">12 months</p>
-      </div>
-
-      <div class="results">
-        <p>Your $<span id="base">10,000</span> debt becomes:</p>
-        <h2 id="total">$12,500</h2>
-        <p>After <span id="years">1 year</span></p>
-      </div>
-
-      <button onclick="window.open('https://www.taxrise.com', '_blank')">
-        Check Your Relief Estimate in 60 Seconds
-      </button>
-
-      <p class="small">
-        *Based on 8% annual interest (compounded daily) and a 0.5% monthly penalty capped at 25%.
-        This calculator is for illustration only.
-      </p>
     </div>
 
     <script>
-      const amountInput = document.getElementById('amount');
-      const timeInput = document.getElementById('time');
-      const totalDisplay = document.getElementById('total');
-      const baseDisplay = document.getElementById('base');
-      const yearsDisplay = document.getElementById('years');
-      const timeLabel = document.getElementById('timeLabel');
+      const amt = document.getElementById('amt');
+      const months = document.getElementById('months');
+      const monthsPretty = document.getElementById('monthsPretty');
+      const baseLabel = document.getElementById('baseLabel');
+      const totalLabel = document.getElementById('totalLabel');
+      const timePretty = document.getElementById('timePretty');
+      const interestLabel = document.getElementById('interestLabel');
+      const penaltyLabel = document.getElementById('penaltyLabel');
+      const totalSmall = document.getElementById('totalSmall');
 
-      function calculate() {
-        const amount = parseFloat(amountInput.value) || 0;
-        const months = parseInt(timeInput.value);
-
-        const interestRate = 0.08; // 8% APR
-        const penaltyPerMonth = 0.005; // 0.5% per month
-        const penaltyCap = 0.25; // 25% cap
-
-        const days = months * 30.4375;
-        const interestFactor = Math.pow(1 + interestRate / 365, days);
-        const interest = amount * (interestFactor - 1);
-        const penalty = amount * Math.min(penaltyPerMonth * months, penaltyCap);
-        const total = amount + interest + penalty;
-
-        totalDisplay.textContent = `$${total.toLocaleString(undefined, {
-          maximumFractionDigits: 0
-        })}`;
-        baseDisplay.textContent = amount.toLocaleString();
-        const years = months / 12;
-        yearsDisplay.textContent =
-          years >= 1 ? `${years.toFixed(1)} year${years > 1 ? 's' : ''}` : `${months} months`;
-        timeLabel.textContent = `${months} month${months === 1 ? '' : 's'}`;
+      function prettyMonths(m){
+        const y = Math.floor(m/12); const r = m%12;
+        if (y===0) return r===6? '6 months' : `${m} months`;
+        if (r===0) return y===1? '1 year' : `${y} years`;
+        return `${y} year${y>1?'s':''} ${r} months`;
       }
 
-      amountInput.addEventListener('input', calculate);
-      timeInput.addEventListener('input', calculate);
+      function calc(){
+        const principal = Math.max(0, parseFloat(amt.value)||0);
+        const m = parseInt(months.value,10);
+        // IRS-style assumptions per spec
+        const APR = 0.08; // 8%
+        const PENALTY_MO = 0.005; // 0.5% per month
+        const PENALTY_CAP = 0.25; // 25%
+        const days = m * 30.4375;
+        const interestFactor = Math.pow(1 + APR/365, days);
+        const interest = principal * (interestFactor - 1);
+        const penaltyRate = Math.min(PENALTY_MO * m, PENALTY_CAP);
+        const penalty = principal * penaltyRate;
+        const total = principal + interest + penalty;
 
-      calculate();
+        baseLabel.textContent = principal.toLocaleString(undefined,{style:'currency',currency:'USD'});
+        totalLabel.textContent = total.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+        totalSmall.textContent = total.toLocaleString(undefined,{style:'currency',currency:'USD'});
+        interestLabel.textContent = interest.toLocaleString(undefined,{style:'currency',currency:'USD'});
+        penaltyLabel.textContent = penalty.toLocaleString(undefined,{style:'currency',currency:'USD'});
+        const pretty = prettyMonths(m);
+        timePretty.textContent = pretty;
+        monthsPretty.textContent = pretty;
+      }
+
+      amt.addEventListener('input', calc);
+      months.addEventListener('input', calc);
+      calc();
     </script>
   </body>
 </html>
